@@ -24,7 +24,7 @@ This phase covers the initial scaffolding and configuration of your project envi
 
 * **API Keys & Configuration:**
     * [X] Obtain an API key from a financial news service (e.g., Finnhub or NewsAPI).
-    * [ ] Identify your user agent for the SEC EDGAR API (typically: "FirstName LastName email@domain.com").
+    * [X] Identify your user agent for the SEC EDGAR API.
     * [X] Create a `.env` file in the project's root directory.
     * [X] Add the `.env` file to `.gitignore` to prevent committing secrets.
     * [ ] Write a `config.py` script in `src/utils` to load environment variables and manage project-wide settings.

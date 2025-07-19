@@ -18,16 +18,16 @@ the appropriate tool. Its primary role is planning and synthesis.
 ### Tool 1: The News & Filings Analyst (RAG System):
 This is your core Retrieval-Augmented Generation (RAG) system. It functions as a specialised tool that allows the agent 
 to query and understand unstructured, qualitative data. Its knowledge base includes:
-    - SEC filings (10-K, 8-K)
-    - Earnings call transcripts
-    - Real-time market news
+- SEC filings (10-K, 8-K)
+- Earnings call transcripts
+- Real-time market news
 ### Tool 2: The Quantitative Data Analyst:
 This is a new, dedicated tool for handling structured, numerical data. Implemented in Python (likely with Pandas and 
 yfinance), it gives the agent the ability to perform precise calculations and fetch verifiable metrics. Its 
 capabilities include:
-    - Fetching current and historical stock prices.
-    - Calculating technical indicators (e.g., moving averages).
-    - Retrieving fundamental financial ratios (P/E, EPS, etc.).
+- Fetching current and historical stock prices.
+- Calculating technical indicators (e.g., moving averages).
+- Retrieving fundamental financial ratios (P/E, EPS, etc.).
 
 ## Operational Workflow
 AlphaAgent's innovation lies in its autonomous, multi-step execution process. Consider the user prompt: 
