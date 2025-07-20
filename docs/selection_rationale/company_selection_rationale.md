@@ -8,7 +8,7 @@ For the initial analysis phase of the **AlphaAgent** project, a representative a
 
 ### Decision Rationale
 
-The selection strategy was to create a balanced portfolio covering key global sectors and market leaders. This includes representation from both the US and other major international markets (India, South Korea) to ensure the agent is robust enough to handle various financial reporting styles, market conditions, and industry-specific terminology.
+The strategy was to create a globally diverse portfolio, blending market leaders from the United States with influential companies from major Asian economic powers, specifically India and South Korea. This ensures the agent is robust enough to handle various financial reporting styles, market conditions, and industry-specific terminology.
 
 The selected companies are:
 

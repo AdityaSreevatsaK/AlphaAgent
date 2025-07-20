@@ -1,5 +1,5 @@
 # <u><p align="center">Alpha Agent</p></u>
-## <i>Financial Clarity, Powered by AI</i>
+## <p align="center"><i>Financial Clarity, Powered by AI</i></p>
 An AI financial analyst that combines qualitative news analysis (RAG) with quantitative market data to deliver
 comprehensive, data-grounded insights.
 
