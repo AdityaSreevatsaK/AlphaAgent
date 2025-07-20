@@ -19,7 +19,8 @@ This phase covers the initial scaffolding and configuration of your project envi
         * [X] Vector DB: `pip install faiss-cpu` (or `faiss-gpu`)
         * [X] Data Tools: `pip install pandas yfinance`
         * [X] Web App: `pip install streamlit`
-        * [X] Utilities: `pip install python-dotenv jupyter notebook beautifulsoup4 sec-edgar-downloader`
+        * [X] Test: `pip install pytest`
+        * [X] Utilities: `pip install python-dotenv jupyter notebook beautifulsoup4 sec-edgar-downloader ruff`
     * [X] Freeze the installed packages for reproducibility: `conda env export > environment.yml`.
 
 * **API Keys & Configuration:**
@@ -27,7 +28,7 @@ This phase covers the initial scaffolding and configuration of your project envi
     * [X] Identify your user agent for the SEC EDGAR API.
     * [X] Create a `.env` file in the project's root directory.
     * [X] Add the `.env` file to `.gitignore` to prevent committing secrets.
-    * [ ] Write a `config.py` script in `src/utils` to load environment variables and manage project-wide settings.
+    * [X] Write a `config.py` script in `src/utils` to load environment variables and manage project-wide settings.
 
 ---
 
