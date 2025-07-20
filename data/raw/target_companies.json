@@ -35,8 +35,8 @@
     "sector": "Conglomerate"
   },
   {
-    "company_name": "Samsung Electronics Co., Ltd.",
-    "ticker": "005930.KS",
+    "company_name": "Sony Group Corporation",
+    "ticker": "SONY",
     "sector": "Technology"
   },
   {
@@ -45,8 +45,8 @@
     "sector": "Automotive"
   },
   {
-    "company_name": "Tata Consultancy Services Limited",
-    "ticker": "TCS.NS",
+    "company_name": "Infosys Limited",
+    "ticker": "INFY",
     "sector": "IT Services & Consulting"
   }
 ]
