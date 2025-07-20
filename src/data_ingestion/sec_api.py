@@ -2,6 +2,7 @@ import os
 
 import requests
 from dotenv import load_dotenv
+
 from src.utils.logger_config import logger
 
 # Load environment variables from .env file
