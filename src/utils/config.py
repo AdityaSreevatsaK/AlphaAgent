@@ -37,10 +37,14 @@ LOGS_DIR = PROJECT_ROOT / "logs"
 LOG_FILE_PATH = LOGS_DIR / "alpha_agent.log"
 
 # --- Create Directories if they don't exist ---
-# This part of the script will automatically create the necessary folders
-# when the config module is first imported.
+# This part of the script will automatically create the necessary folders when the config module is first imported.
 DATA_DIR.mkdir(exist_ok=True)
 RAW_DATA_DIR.mkdir(exist_ok=True)
 PROCESSED_DATA_DIR.mkdir(exist_ok=True)
 VECTOR_STORE_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)
+
+# --- Data Fetching Configuration ---
+HF_DATA_REPO_ID = "AdityaSreevatsaK/AlphaAgent-Data"
+# Number of days of historical news to fetch
+NEWS_LOOKBACK_DAYS = 90

@@ -4,7 +4,8 @@ IGNORE_FOLDERS = {".git", "__pycache__"}
 
 
 def print_folder_tree(start_path, indent=""):
-    """Recursively prints a directory tree structure.
+    """
+    Recursively prints a directory tree structure.
 
     This function traverses the directory structure starting from `start_path`
     and prints a visual representation of the folder hierarchy to the console.

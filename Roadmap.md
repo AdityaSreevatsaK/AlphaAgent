@@ -17,7 +17,7 @@ This phase covers the initial scaffolding and configuration of your project envi
         * [X] Agent Framework: `pip install llama-index`
         * [X] Embeddings: `pip install sentence-transformers`
         * [X] Vector DB: `pip install faiss-cpu` (or `faiss-gpu`)
-        * [X] Data Tools: `pip install pandas yfinance`
+        * [X] Data Tools: `pip install pandas yfinance finnhub-python`
         * [X] Web App: `pip install streamlit`
         * [X] Test: `pip install pytest`
         * [X] Utilities: `pip install python-dotenv jupyter notebook beautifulsoup4 sec-edgar-downloader ruff`
@@ -41,7 +41,7 @@ This phase focuses on sourcing and preparing the raw data needed for the agent's
 
 * **Unstructured Data (for RAG Tool):**
     * [X] Write a script (`scripts/fetch_sec_data.py`) to download 10-K (annual) and 8-K (current report) filings for your target companies from EDGAR.
-    * [ ] Write a script (`scripts/fetch_news_data.py`) to download recent news articles for your target companies using your chosen news API.
+    * [X] Write a script (`scripts/fetch_news_data.py`) to download recent news articles for your target companies using your chosen news API.
     * [ ] Implement a simple file-based caching strategy in both scripts to avoid re-downloading data.
     * [ ] Create data cleaning functions (`src/data_processing.py`) to strip boilerplate text, HTML, and other noise from the raw text files, saving the output to `/data/processed`.
 
