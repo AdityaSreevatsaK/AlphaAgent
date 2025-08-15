@@ -208,6 +208,7 @@ __marimo__/
 
 # Ignore downloaded raw data
 /data/raw/filings/
+/data/raw/news/
 
 # Ignore processed data
 /data/processed/
