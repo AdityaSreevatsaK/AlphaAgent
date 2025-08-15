@@ -40,7 +40,7 @@ This phase focuses on sourcing and preparing the raw data needed for the agent's
     * [X] Define an initial list of 10 publicly traded companies for analysis.
 
 * **Unstructured Data (for RAG Tool):**
-    * [ ] Write a script (`scripts/fetch_sec_data.py`) to download 10-K (annual) and 8-K (current report) filings for your target companies from EDGAR.
+    * [X] Write a script (`scripts/fetch_sec_data.py`) to download 10-K (annual) and 8-K (current report) filings for your target companies from EDGAR.
     * [ ] Write a script (`scripts/fetch_news_data.py`) to download recent news articles for your target companies using your chosen news API.
     * [ ] Implement a simple file-based caching strategy in both scripts to avoid re-downloading data.
     * [ ] Create data cleaning functions (`src/data_processing.py`) to strip boilerplate text, HTML, and other noise from the raw text files, saving the output to `/data/processed`.
