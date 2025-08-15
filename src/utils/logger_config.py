@@ -30,7 +30,7 @@ def setup_logger():
     log_agent.addHandler(file_handler)
     log_agent.addHandler(console_handler)
 
-    return logger
+    return log_agent
 
 
 logger = setup_logger()
