@@ -8,7 +8,19 @@ logger = logger_config.logger
 
 def main():
     """
-    Main script to download 10-K and 8-K filings for target companies.
+    Orchestrates the download of SEC filings for a predefined list of target companies.
+
+    This script performs the following steps:
+    1.  Loads the list of target company tickers from
+        `data/raw/target_companies.json`.
+    2.  Loads a comprehensive mapping of all company tickers to their CIK numbers
+        from `data/raw/company_tickers.json`.
+    3.  Constructs a dictionary that maps each target ticker to its corresponding CIK.
+    4.  Calls the `download_filings` function to fetch and save the 10-K and 8-K
+        filings for the target companies.
+
+    The script assumes that `target_companies.json` and `company_tickers.json`
+    exist in the `data/raw` directory.
     """
     logger.info("Starting SEC filing download process...")
 

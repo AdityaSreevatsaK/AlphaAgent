@@ -3,12 +3,16 @@
 An AI financial analyst that combines qualitative news analysis (RAG) with quantitative market data to deliver
 comprehensive, data-grounded insights.
 
+---
+
 ### Project Vision & Goal
 AlphaAgent is an autonomous AI framework designed to emulate the comprehensive workflow of a human financial analyst.
 The project's core objective is to overcome the limitations of standard Large Language Models (LLMs), such as factual
 hallucination and a lack of access to real-time, domain-specific data. By creating an agent that can intelligently use
 multiple specialised tools, AlphaAgent aims to produce financial analysis that is accurate, transparent, auditable, and
 actionable, providing a reliable foundation for investment decisions.
+
+---
 
 ### Core Architecture
 The framework is built on a modular, multi-component architecture, separating reasoning from execution.
@@ -30,6 +34,8 @@ capabilities include:
 - Calculating technical indicators (e.g., moving averages).
 - Retrieving fundamental financial ratios (P/E, EPS, etc.).
 
+---
+
 ### Operational Workflow
 AlphaAgent's innovation lies in its autonomous, multi-step execution process. Consider the user prompt:
 "Analyse the market reaction to NVIDIA's latest earnings report and compare its current P/E ratio to that of AMD."
@@ -45,3 +51,5 @@ AlphaAgent's innovation lies in its autonomous, multi-step execution process. Co
 - Synthesis: After receiving the outputs from all tool calls, the Orchestrator combines the qualitative sentiment
 analysis with the direct P/E ratio comparison to generate a single, comprehensive, and evidence-backed response for
 the user.
+
+----
