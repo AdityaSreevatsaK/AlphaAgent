@@ -41,10 +41,18 @@ def fetch_company_news(target_tickers: list):
     news_dir.mkdir(exist_ok=True)
 
     for ticker in target_tickers:
+        # Define the expected output path for the news file
+        output_path = news_dir / f"{ticker}_news.json"
+
+        # --- CACHING LOGIC START ---
+        # Check if the file already exists before making an API call
+        if output_path.exists():
+            logger.info(f"News for {ticker} already exists. Skipping download.")
+            continue  # Move to the next ticker
+        # --- CACHING LOGIC END ---
+
         try:
-            logger.info(
-                f"Fetching news for {ticker} from {start_date.strftime(date_format)} to {end_date.strftime(date_format)}..."
-            )
+            logger.info(f"Fetching news for {ticker}...")
 
             # Make the API call to Finnhub
             company_news = finnhub_client.company_news(
@@ -53,16 +61,11 @@ def fetch_company_news(target_tickers: list):
                 to=end_date.strftime(date_format),
             )
 
-            # Define the output path for the news file
-            output_path = news_dir / f"{ticker}_news.json"
-
             # Save the news to a JSON file
-            with open(output_path, "w") as company_news_file:
-                json.dump(company_news, company_news_file, indent=4)
+            with open(output_path, "w") as f:
+                json.dump(company_news, f, indent=4)
 
-            logger.info(
-                f"Successfully fetched and saved {len(company_news)} news articles for {ticker} to {output_path}."
-            )
+            logger.info(f"Successfully saved news for {ticker}.")
 
         except Exception as e:
             logger.error(f"Could not fetch news for {ticker}: {e}", exc_info=True)

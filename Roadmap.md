@@ -42,7 +42,7 @@ This phase focuses on sourcing and preparing the raw data needed for the agent's
 * **Unstructured Data (for RAG Tool):**
     * [X] Write a script (`scripts/fetch_sec_data.py`) to download 10-K (annual) and 8-K (current report) filings for your target companies from EDGAR.
     * [X] Write a script (`scripts/fetch_news_data.py`) to download recent news articles for your target companies using your chosen news API.
-    * [ ] Implement a simple file-based caching strategy in both scripts to avoid re-downloading data.
+    * [X] Implement a simple file-based caching strategy in both scripts to avoid re-downloading data.
     * [ ] Create data cleaning functions (`src/data_processing.py`) to strip boilerplate text, HTML, and other noise from the raw text files, saving the output to `/data/processed`.
 
 * **Structured Data (for Quantitative Tool):**
@@ -58,7 +58,6 @@ This phase involves finalising the technical design and organising the project s
 * **Project Structure:**
     * [ ] Establish the full project directory structure as planned.
     * [ ] Update `README.md` with the project abstract, goals, and setup instructions.
-    * [ ] Create a project board (e.g., GitHub Projects) and populate it with tasks from this roadmap.
 
 * **Core Model & Architecture Decisions:**
     * [ ] Finalise the base LLM for fine-tuning (e.g., Llama-3-8B-Instruct, Mistral-7B-Instruct).
