@@ -2,7 +2,7 @@ import json
 
 from dotenv import load_dotenv
 
-from src.data_ingestion.fetch_news import fetch_company_news
+from src.data_pipeline.fetch_news import fetch_company_news
 from src.utils import config
 from src.utils.logger_config import logger
 

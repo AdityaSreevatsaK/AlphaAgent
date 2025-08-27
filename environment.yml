@@ -83,6 +83,7 @@ dependencies:
       - faiss-cpu==1.11.0.post1
       - filelock==3.18.0
       - filetype==1.2.0
+      - finnhub-python==2.4.24
       - frozendict==2.4.6
       - frozenlist==1.7.0
       - fsspec==2025.7.0
@@ -119,6 +120,7 @@ dependencies:
       - llama-index-readers-llama-parse==0.4.0
       - llama-index-workflows==1.1.0
       - llama-parse==0.6.43
+      - lxml==6.0.0
       - markupsafe==3.0.2
       - marshmallow==3.26.1
       - mpmath==1.3.0

@@ -1,6 +1,6 @@
 import json
 
-from src.data_ingestion.sec_downloader import download_filings
+from src.data_pipeline.sec_downloader import download_filings
 from src.utils import config, logger_config
 
 logger = logger_config.logger

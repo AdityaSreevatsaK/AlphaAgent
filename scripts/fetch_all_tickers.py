@@ -1,6 +1,6 @@
 import json
 
-from src.data_ingestion.sec_api import get_company_tickers
+from src.data_pipeline.sec_api import get_company_tickers
 from src.utils import config
 from src.utils.logger_config import logger
 
