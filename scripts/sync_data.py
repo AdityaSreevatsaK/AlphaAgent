@@ -1,61 +1,53 @@
-from src.utils import config
-from src.utils.config import HF_DATA_REPO_ID
-from src.utils.hub_manager import check_hub_path_exists, get_from_hub, upload_to_hub
+# Import the specific function and config utilities you need
+from src.utils.hub_manager import upload_to_hub
+from src.utils.config import HF_DATA_REPO_ID, DATA_DIR
 from src.utils.logger_config import logger
 
+
 # --- Configuration ---
+# Define the datasets to synchronise.
+# 'local_dir_name' is the folder name inside the project's 'data' directory.
+# 'hub_path' is the destination path in the Hugging Face Hub repository.
 DATASETS_TO_SYNC = {
-    "filings": {"local_dir": "raw/filings", "hub_path": "filings/"},
-    "news": {"local_dir": "raw/news", "hub_path": "news/"},
+    "raw_filings": {"local_dir_name": "raw/filings", "hub_path": "raw/filings/"},
+    "raw_news": {"local_dir_name": "raw/news", "hub_path": "raw/news/"},
+    "processed_filings": {
+        "local_dir_name": "processed/filings",
+        "hub_path": "processed/filings/",
+    },
+    "processed_news": {
+        "local_dir_name": "processed/news",
+        "hub_path": "processed/news/",
+    },
 }
 
+# --- Main Execution ---
+if __name__ == "__main__":
+    # Load the Hugging Face repository ID from the main config file.
+    repo_id = HF_DATA_REPO_ID
+    logger.info(f"Starting data sync for repository: {repo_id}")
 
-def main():
-    """
-    Automated script to synchronize local data with the Hugging Face Hub.
-
-    For each dataset, it checks the local and remote status and then decides
-    to upload, download, or do nothing.
-    """
-    logger.info("Starting automated data synchronization process...")
-
+    # Iterate over the defined datasets and synchronise each one.
     for name, paths in DATASETS_TO_SYNC.items():
-        logger.info(f"--- Processing dataset: {name} ---")
+        local_dir_name = paths["local_dir_name"]
+        local_path = DATA_DIR / local_dir_name
 
-        # Check local status
-        local_path = config.DATA_DIR / paths["local_dir"]
-        local_exists = local_path.exists() and any(local_path.iterdir())
+        # Check if the local directory exists before attempting to sync.
+        if local_path.exists() and local_path.is_dir():
+            logger.info(
+                f"Preparing to sync '{name}' from '{local_path}' to '{paths['hub_path']}'..."
+            )
 
-        # Check remote (Hub) status
-        hub_exists = check_hub_path_exists(
-            repo_id=HF_DATA_REPO_ID, path_in_repo=paths["hub_path"]
-        )
-
-        # --- Automated Decision Logic ---
-        if local_exists and not hub_exists:
-            logger.info(f"Local '{name}' data found but not on Hub. Uploading...")
+            # Call the upload_to_hub function directly from the hub_manager module.
             upload_to_hub(
-                repo_id=HF_DATA_REPO_ID,
-                local_dir_name=paths["local_dir"],
+                repo_id=repo_id,
+                local_dir_name=local_dir_name,
                 path_in_repo=paths["hub_path"],
             )
-        elif not local_exists and hub_exists:
-            logger.info(
-                f"Local '{name}' data not found but exists on Hub. Downloading..."
-            )
-            get_from_hub(repo_id=HF_DATA_REPO_ID, local_dir_name=paths["local_dir"])
-        elif local_exists and hub_exists:
-            logger.info(
-                f"Dataset '{name}' exists both locally and on the Hub. Sync complete."
-            )
-        else:  # Not local, not on Hub
+        else:
+            # Log a warning if a configured local directory does not exist.
             logger.warning(
-                f"Dataset '{name}' not found locally or on the Hub. "
-                f"Please run the appropriate fetch script (e.g., fetch_sec_data.py) first."
+                f"Local directory '{local_path}' not found. Skipping sync for '{name}'."
             )
 
-    logger.info("--- Data synchronization process finished. ---")
-
-
-if __name__ == "__main__":
-    main()
+    logger.info("Data synchronisation process finished.")
