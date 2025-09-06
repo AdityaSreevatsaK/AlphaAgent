@@ -206,14 +206,8 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
-# Ignore downloaded raw data
-/data/raw/
-
-# Ignore processed data
-/data/processed/
-
-# Ignore the vector store
-/data/vector_store/
+# Ignore data
+/data/
 
 # Ignore downloaded and trained models
 /models/
