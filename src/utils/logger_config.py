@@ -3,7 +3,7 @@ import logging
 from src.utils import config
 
 
-def setup_logger():
+def setup_logging():
     """
     Sets up a centralized logger for the AlphaAgent project.
     """
@@ -33,4 +33,4 @@ def setup_logger():
     return log_agent
 
 
-logger = setup_logger()
+logger = setup_logging()

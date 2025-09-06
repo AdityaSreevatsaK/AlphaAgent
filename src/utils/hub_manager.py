@@ -1,16 +1,14 @@
-import logging
 import os
 from pathlib import Path
 
 from dotenv import load_dotenv
-from huggingface_hub import HfApi, list_repo_files
-from huggingface_hub import login
+from huggingface_hub import HfApi, list_repo_files, login
 from huggingface_hub import snapshot_download
 
-from src.utils import config
+from src.utils import config, logger_config
 
 # Get the logger
-logger = logging.getLogger(__name__)
+logger = logger_config.setup_logging()
 
 
 def get_from_hub(repo_id: str, local_dir_name: str, repo_type: str = "dataset") -> Path:
@@ -56,55 +54,6 @@ def get_from_hub(repo_id: str, local_dir_name: str, repo_type: str = "dataset") 
         return local_path
 
 
-def upload_to_hub(
-    repo_id: str, local_dir_name: str, path_in_repo: str, repo_type: str = "dataset"
-):
-    """
-    Uploads a local directory to the Hugging Face Hub.
-
-    Args:
-        repo_id (str): The ID of the repository on the Hub.
-        local_dir_name (str): The name of the local folder within the project's data directory.
-        path_in_repo (str): The target subfolder path within the Hub repository.
-        repo_type (str, optional): The type of the repository. Defaults to "dataset".
-    """
-    logger.info(
-        f"Starting upload of '{local_dir_name}' to Hugging Face Hub repo '{repo_id}'..."
-    )
-
-    load_dotenv()
-    hf_token = os.getenv("HUGGINGFACE_ALPHA_AGENT_DATA_REPO_KEY")
-    if not hf_token:
-        logger.error(
-            "Hugging Face token not found. Please add HF_TOKEN to your .env file."
-        )
-        return
-
-    login(token=hf_token)
-    logger.info("Successfully logged in to Hugging Face Hub.")
-
-    api = HfApi()
-    local_path = config.DATA_DIR / local_dir_name
-
-    if not local_path.exists():
-        logger.error(f"Local directory not found at '{local_path}'. Aborting upload.")
-        return
-
-    try:
-        logger.info(
-            f"Uploading directory '{local_path}' to '{path_in_repo}' in the repo..."
-        )
-        api.upload_folder(
-            folder_path=str(local_path),
-            repo_id=repo_id,
-            repo_type=repo_type,
-            path_in_repo=path_in_repo,
-        )
-        logger.info("Upload completed successfully.")
-    except Exception as e:
-        logger.error(f"An error occurred during upload: {e}", exc_info=True)
-
-
 def check_hub_path_exists(
     repo_id: str, path_in_repo: str, repo_type: str = "dataset"
 ) -> bool:
@@ -137,3 +86,96 @@ def check_hub_path_exists(
         logger.error(f"Could not check repository '{repo_id}': {e}")
         # If we can't check, assume it doesn't exist to be safe
         return False
+
+
+def upload_to_hub(
+    repo_id: str, local_dir_name: str, path_in_repo: str, repo_type: str = "dataset"
+):
+    """
+    Uploads a local directory to the Hugging Face Hub.
+
+    Args:
+        repo_id (str): The ID of the repository on the Hub.
+        local_dir_name (str): The name of the local folder within the project's data directory.
+        path_in_repo (str): The target subfolder path within the Hub repository.
+        repo_type (str, optional): The type of the repository. Defaults to "dataset".
+    """
+    logger.info(
+        f"Starting upload of directory '{local_dir_name}' to '{path_in_repo}' in repo '{repo_id}'..."
+    )
+
+    # --- Authentication ---
+    load_dotenv()
+    hf_token = os.getenv("HUGGINGFACE_ALPHA_AGENT_DATA_REPO_KEY")
+    if not hf_token:
+        logger.error(
+            "Hugging Face token not found. Please add HUGGINGFACE_ALPHA_AGENT_DATA_REPO_KEY to your .env file."
+        )
+        return
+    login(token=hf_token)
+
+    # --- Path and Upload Logic ---
+    # Assuming 'config.DATA_DIR' is defined in your project as the root data folder
+    from src.utils.config import DATA_DIR
+
+    local_path = DATA_DIR / local_dir_name
+
+    if not local_path.exists() or not local_path.is_dir():
+        logger.error(f"Local directory not found at '{local_path}'. Aborting upload.")
+        return
+
+    try:
+        api = HfApi()
+        api.upload_folder(
+            folder_path=str(local_path),
+            repo_id=repo_id,
+            repo_type=repo_type,
+            path_in_repo=path_in_repo,
+        )
+        logger.info(f"Directory '{local_dir_name}' uploaded successfully.")
+    except Exception as e:
+        logger.error(f"An error occurred during directory upload: {e}", exc_info=True)
+
+
+def upload_file_to_hub(
+    repo_id: str, local_file_path: str, path_in_repo: str, repo_type: str = "dataset"
+):
+    """
+    Uploads a single local file to the Hugging Face Hub.
+
+    Args:
+        repo_id (str): The ID of the repository on the Hub.
+        local_file_path (str): The full path to the local file to upload.
+        path_in_repo (str): The target path (including filename) within the Hub repository.
+        repo_type (str, optional): The type of the repository. Defaults to "dataset".
+    """
+    logger.info(
+        f"Starting upload of file '{local_file_path}' to '{path_in_repo}' in repo '{repo_id}'..."
+    )
+
+    # --- Authentication ---
+    load_dotenv()
+    hf_token = os.getenv("HUGGINGFACE_ALPHA_AGENT_DATA_REPO_KEY")
+    if not hf_token:
+        logger.error(
+            "Hugging Face token not found. Please add HUGGINGFACE_ALPHA_AGENT_DATA_REPO_KEY to your .env file."
+        )
+        return
+    login(token=hf_token)
+
+    # --- Path and Upload Logic ---
+    if not Path(local_file_path).exists():
+        logger.error(f"Local file not found at '{local_file_path}'. Aborting upload.")
+        return
+
+    try:
+        api = HfApi()
+        api.upload_file(
+            path_or_fileobj=local_file_path,
+            path_in_repo=path_in_repo,
+            repo_id=repo_id,
+            repo_type=repo_type,
+        )
+        logger.info(f"File '{path_in_repo}' uploaded successfully.")
+    except Exception as e:
+        logger.error(f"An error occurred during file upload: {e}", exc_info=True)

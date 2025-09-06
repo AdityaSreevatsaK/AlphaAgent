@@ -1,0 +1,9 @@
+# Hugging Face Hub settings
+# repo_id: The identifier for your dataset repository on Hugging Face.
+huggingface:
+  repo_id: "AdityaSreevatsaK/AlphaAgent-Data"
+
+# News fetching settings
+# lookback_days: The number of past days to retrieve news articles for.
+news_api:
+  lookback_days: 90

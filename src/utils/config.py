@@ -1,50 +1,69 @@
 import os
 from pathlib import Path
 
+import yaml
 from dotenv import load_dotenv
 
+# --- Project Root ---
+# Defines the absolute path to the project's root directory.
+# This makes all other paths relative and the project portable.
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
 # --- Load Environment Variables ---
-# This line looks for a .env file in the project root and loads its variables.
 load_dotenv()
 
-# --- Project Root ---
-# This gives us the absolute path to the project's root directory.
-# We go up two levels from this file's location (src/utils/ -> src/ -> ROOT).
-PROJECT_ROOT = Path(__file__).parent.parent.parent
-
 # --- SEC EDGAR API Configuration ---
-# Your user agent for making requests to the SEC.
-# It's fetched from your .env file for security.
+# User agent for making requests to the SEC.
 SEC_USER_AGENT = os.getenv("SEC_USER_AGENT")
 
-# --- Data Directories ---
-# We define all data paths relative to the project root.
-# This makes your project portable.
+
+def get_config(section: str) -> dict:
+    """
+    Reads a specific section from the config.yml file located in the project root.
+
+    Args:
+        section (str): The top-level key of the configuration section to retrieve.
+
+    Returns:
+        dict: A dictionary containing the configuration for the requested section.
+              Returns an empty dict if the section or file is not found.
+    """
+    config_path = PROJECT_ROOT / "config.yml"
+    try:
+        with open(config_path, "r") as f:
+            config = yaml.safe_load(f)
+        return config.get(section, {})
+    except FileNotFoundError:
+        print(f"Error: Configuration file not found at {config_path}")
+        return {}
+    except Exception as e:
+        print(f"Error reading or parsing the configuration file: {e}")
+        return {}
+
+
+# --- Static Directory Paths ---
+# Define key data directories relative to the project root.
 DATA_DIR = PROJECT_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 VECTOR_STORE_DIR = DATA_DIR / "vector_store"
-
-# --- Model Configuration ---
-# This is where you will define your model settings.
-# For now, it's a placeholder, but you will expand on this.
-BASE_MODEL_NAME = "meta-llama/Llama-2-7b-chat-hf"
-ADAPTERS_PATH = PROJECT_ROOT / "models" / "fine_tuned_adapters"
-
-# --- Logging Configuration ---
-# A simple configuration for logging project activities.
+MODELS_DIR = PROJECT_ROOT / "models"
 LOGS_DIR = PROJECT_ROOT / "logs"
-LOG_FILE_PATH = LOGS_DIR / "alpha_agent.log"
 
-# --- Create Directories if they don't exist ---
-# This part of the script will automatically create the necessary folders when the config module is first imported.
+# --- Create Directories on Import ---
+# This ensures that the necessary folders exist when the application starts.
 DATA_DIR.mkdir(exist_ok=True)
 RAW_DATA_DIR.mkdir(exist_ok=True)
 PROCESSED_DATA_DIR.mkdir(exist_ok=True)
 VECTOR_STORE_DIR.mkdir(exist_ok=True)
 LOGS_DIR.mkdir(exist_ok=True)
 
-# --- Data Fetching Configuration ---
-HF_DATA_REPO_ID = "AdityaSreevatsaK/AlphaAgent-Data"
-# Number of days of historical news to fetch
-NEWS_LOOKBACK_DAYS = 90
+# --- Logging Configuration ---
+# A simple configuration for logging project activities.
+LOGS_DIR = PROJECT_ROOT / "logs"
+LOG_FILE_PATH = LOGS_DIR / "alpha_agent.log"
+
+# --- Model Configuration ---
+# For now, it's a placeholder, but we'll expand on this.
+BASE_MODEL_NAME = "meta-llama/Llama-2-7b-chat-hf"
+ADAPTERS_PATH = PROJECT_ROOT / "models" / "fine_tuned_adapters"
