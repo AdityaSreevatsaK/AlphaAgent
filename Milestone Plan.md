@@ -17,7 +17,7 @@ infrastructure, basic data ingestion, and proving the agentic workflow.
     * `[X]` **Target Entities:** Define my initial list of 10 companies.
     * `[X]` **Ingest Unstructured Data:** Write and test scripts to download **10-K, 8-K filings**, and **news articles
       ** only. Implement simple file caching.
-    * `[ ]` **Ingest Structured Data:** Use a notebook to validate fetching basic stock data (price, ratios, market cap)
+    * `[X]` **Ingest Structured Data:** Use a notebook to validate fetching basic stock data (price, ratios, market cap)
       using the `yfinance` library.
     * `[X]` **Basic Cleaning:** Create initial data cleaning functions to strip boilerplate and HTML from the raw text
       data.

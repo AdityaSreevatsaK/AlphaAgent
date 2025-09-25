@@ -60,7 +60,7 @@ This phase focuses on sourcing and preparing the core data for the MVP.
 This phase involves building the individual "tools" that the agent will use in its MVP form.
 
 * **Structured Data Exploration:**
-    * `[ ]` In a notebook (`notebooks/01_yfinance_test.ipynb`), test and validate fetching key data points via the
+    * `[X]` In a notebook (`notebooks/01_yfinance_test.ipynb`), test and validate fetching key data points via the
       `yfinance` library (e.g., current price, P/E ratio, market cap).
 
 * **Quantitative Tool Development (`src/tools/quantitative_tool.py`):**
