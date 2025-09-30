@@ -1,10 +1,9 @@
 import sys
 from pathlib import Path
 
-from src.utils.config import DATA_DIR, get_config
+from src.utils.config import DATA_DIR, get_config, MODELS_DIR
 from src.utils.hub_manager import upload_to_hub
 from src.utils.logger_config import setup_logging
-from utils.config import MODELS_DIR
 
 project_root = Path(__file__).resolve().parents[1]
 sys.path.append(str(project_root))
