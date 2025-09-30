@@ -1,3 +1,4 @@
+import torch
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
@@ -26,9 +27,20 @@ class IngestionPipeline:
         self._setup_settings()
 
     def _setup_settings(self):
-        """Configures the global LlamaIndex settings for the pipeline."""
-        # Define the embedding model
-        embed_model = HuggingFaceEmbedding(model_name=self.embedding_model_name)
+        """Configures the global LlamaIndex settings and ensures GPU is used."""
+
+        # --- Explicitly setting the device to CUDA, if available ---
+        device = "cuda" if torch.cuda.is_available() else "cpu"
+        logger.info(f"Using device: {device}")
+        if device == "cpu":
+            logger.warning(
+                "GPU not available, falling back to CPU. This will be very slow."
+            )
+
+        # Define the embedding model and explicitly set it to use the GPU
+        embed_model = HuggingFaceEmbedding(
+            model_name=self.embedding_model_name, device=device
+        )
 
         # Configure the sentence splitter
         node_parser = SentenceSplitter(chunk_size=512, chunk_overlap=20)
