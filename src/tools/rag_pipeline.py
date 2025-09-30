@@ -40,7 +40,7 @@ class IngestionPipeline:
             f"LlamaIndex Settings configured with embedding model: {self.embedding_model_name}"
         )
 
-    def run_pipeline(self):
+    def run_pipeline(self, input_dir_path: str = None):
         """
         Executes the full ingestion pipeline.
 
@@ -52,14 +52,20 @@ class IngestionPipeline:
         """
         logger.info("Starting ingestion pipeline...")
 
-        # 1. Load documents
-        # This will look for all text files in your processed data folder
-        reader = SimpleDirectoryReader(input_dir=config.PROCESSED_DATA_DIR)
+        # Use the provided path, or default to the one from config
+        if input_dir_path is None:
+            input_dir_path = config.PROCESSED_DATA_DIR
+
+        # 1. Load documents recursively
+        logger.info(f"Recursively loading documents from: {input_dir_path}")
+        reader = SimpleDirectoryReader(
+            input_dir=str(input_dir_path),
+            recursive=True,  # <-- This is the crucial change
+        )
         documents = reader.load_data()
+
         if not documents:
-            logger.error(
-                "No documents found in the processed data directory. Aborting."
-            )
+            logger.error(f"No documents found in '{input_dir_path}'. Aborting.")
             return
 
         logger.info(f"Loaded {len(documents)} documents.")
