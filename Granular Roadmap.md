@@ -39,7 +39,7 @@ This phase covers the initial scaffolding and configuration of the project envir
 This phase focuses on sourcing and preparing the core data for the MVP.
 
 * **Scaffolding & Target Entities:**
-    * `[ ]` Establish the full project directory structure (`/data/raw`, `/data/processed`, `/scripts`, `/src`, etc.).
+    * `[X]` Establish the full project directory structure (`/data/raw`, `/data/processed`, `/scripts`, `/src`, etc.).
     * `[X]` Define my initial list of 10 company tickers in `src/utils/config.py`.
 
 * **Unstructured Data Ingestion (MVP Scope):**
