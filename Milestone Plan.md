@@ -27,7 +27,7 @@ infrastructure, basic data ingestion, and proving the agentic workflow.
       **embedding model** (e.g., `bge-large-en-v1.5`). Note: No fine-tuning at this stage.
     * `[ ]` **Build RAG Tool:** Implement the core RAG pipeline: load the cleaned 10-K/8-K/news documents, chunk them,
       and create a searchable FAISS vector index.
-    * `[ ]` **Build Quantitative Tool:** Create a basic `QuantitativeTool` class that wraps the `yfinance` functions to
+    * `[X]` **Build Quantitative Tool:** Create a basic `QuantitativeTool` class that wraps the `yfinance` functions to
       get current price, key ratios, etc.
 
 * **4. System Integration & Basic UI**

@@ -64,8 +64,8 @@ This phase involves building the individual "tools" that the agent will use in i
       `yfinance` library (e.g., current price, P/E ratio, market cap).
 
 * **Quantitative Tool Development (`src/tools/quantitative_tool.py`):**
-    * `[ ]` Refactor the notebook code into a robust `QuantitativeTool` class.
-    * `[ ]` Implement specific, well-documented methods such as `get_key_financial_ratios(ticker: str)` and
+    * `[X]` Refactor the notebook code into a robust `QuantitativeTool` class.
+    * `[X]` Implement specific, well-documented methods such as `get_key_financial_ratios(ticker: str)` and
       `get_daily_stock_performance(ticker: str)`.
 
 * **RAG Pipeline Development (`src/tools/rag_pipeline.py`):**
