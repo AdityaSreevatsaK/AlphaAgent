@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import torch
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex
 from llama_index.core.node_parser import SentenceSplitter
@@ -59,25 +61,55 @@ class IngestionPipeline:
 
     def run_pipeline(self, input_dir_path: str = None):
         """
-        Executes the full ingestion pipeline.
+        Executes the full ingestion pipeline by explicitly loading from
+        the 'news' and 'filings' subdirectories.
         """
         logger.info("Starting ingestion pipeline...")
 
-        if input_dir_path is None:
-            input_dir_path = config.PROCESSED_DATA_DIR
+        base_processed_dir = (
+            Path(input_dir_path) if input_dir_path else config.PROCESSED_DATA_DIR
+        )
 
-        logger.info(f"Recursively loading documents from: {input_dir_path}")
-        reader = SimpleDirectoryReader(input_dir=str(input_dir_path), recursive=True)
-        documents = reader.load_data()
+        news_path = base_processed_dir / "news"
+        filings_path = base_processed_dir / "filings"
+        all_documents = []
 
-        if not documents:
-            logger.error(f"No documents found in '{input_dir_path}'. Aborting.")
+        # 1. Load documents from the 'news' directory (non-recursively).
+        if news_path.exists():
+            logger.info(f"Loading documents from: {news_path}")
+            news_reader = SimpleDirectoryReader(
+                input_dir=str(news_path), recursive=False
+            )
+            news_docs = news_reader.load_data()
+            all_documents.extend(news_docs)
+            logger.info(f"Loaded {len(news_docs)} news documents.")
+        else:
+            logger.warning(f"News directory not found at '{news_path}'. Skipping.")
+
+        # 2. Load documents from the 'filings' directory (recursively).
+        if filings_path.exists():
+            logger.info(f"Loading documents from: {filings_path}")
+            filings_reader = SimpleDirectoryReader(
+                input_dir=str(filings_path), recursive=True
+            )
+            filings_docs = filings_reader.load_data()
+            all_documents.extend(filings_docs)
+            logger.info(f"Loaded {len(filings_docs)} filing documents.")
+        else:
+            logger.warning(
+                f"Filings directory not found at '{filings_path}'. Skipping."
+            )
+
+        if not all_documents:
+            logger.error(
+                f"No documents found in subdirectories of '{base_processed_dir}'. Aborting."
+            )
             return
 
-        logger.info(f"Loaded {len(documents)} documents.")
+        logger.info(f"Loaded a total of {len(all_documents)} documents.")
 
         logger.info("Creating vector store index. This may take some time...")
-        index = VectorStoreIndex.from_documents(documents, show_progress=True)
+        index = VectorStoreIndex.from_documents(all_documents, show_progress=True)
 
         index_path = str(config.VECTOR_STORE_DIR / "faiss_index")
         index.storage_context.persist(persist_dir=index_path)
