@@ -82,7 +82,8 @@ class QuantitativeTool:
         ]
         return "\n".join(formatted_ratios)
 
-    def get_daily_stock_performance(self, ticker: str) -> str:
+    @staticmethod
+    def get_daily_stock_performance(ticker: str) -> str:
         """
         Provides the daily stock performance for a given ticker.
 
