@@ -6,31 +6,32 @@ from bs4 import BeautifulSoup
 logger = logging.getLogger(__name__)
 
 
-def clean_sec_filing_text(html_content: str) -> str:
+def clean_sec_filing_text(raw_filing_text: str) -> str:
     """
-    Cleans the HTML content of an SEC filing to extract plain text.
-
-    Args:
-        html_content (str): The raw HTML content of the filing.
-
-    Returns:
-        str: The cleaned, plain text content.
+    Cleans the raw text of a full SEC filing submission.
+    It finds the primary document text (like a 10-K) within the raw file,
+    parses its HTML, and extracts clean, readable text.
     """
     try:
-        # Parse the HTML using BeautifulSoup
-        soup = BeautifulSoup(html_content, "lxml")
+        # Regex to find the start of the first document, which is usually the main report
+        doc_start_match = re.search(r"<DOCUMENT>", raw_filing_text)
+        doc_end_match = re.search(r"</DOCUMENT>", raw_filing_text)
 
-        # Extract the text
+        if not doc_start_match or not doc_end_match:
+            logger.warning("Could not find <DOCUMENT> tags in the filing.")
+            return ""
+
+        # Extract the content between the first <DOCUMENT> and </DOCUMENT> tags
+        document_text = raw_filing_text[doc_start_match.end() : doc_end_match.start()]
+
+        # Now, parse the extracted document text with BeautifulSoup
+        soup = BeautifulSoup(document_text, "lxml")
+
+        # Get text and normalize whitespace
         text = soup.get_text(separator=" ")
+        cleaned_text = re.sub(r"\s+", " ", text).strip()
 
-        # --- Basic Text Normalization ---
-        # Replace multiple spaces, newlines, and tabs with a single space
-        text = re.sub(r"\s+", " ", text)
-
-        # You could add more advanced logic here to remove boilerplate sections
-        # For example, using regex to find and remove common disclaimer patterns.
-
-        return text.strip()
+        return cleaned_text
     except Exception as e:
         logger.error(f"Error cleaning SEC filing: {e}", exc_info=True)
         return ""
