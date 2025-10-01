@@ -30,28 +30,33 @@ def get_from_hub(repo_id: str, local_dir_name: str, repo_type: str = "dataset") 
         Path: The local path to the downloaded or existing data.
     """
     # Define the local path based on the project's data directory structure
-    local_path = config.DATA_DIR / local_dir_name
+    # This is the final, correct path where data should be, e.g., '.../data/processed'
+    final_data_path = config.DATA_DIR / local_dir_name
 
-    # Check if the data already exists locally
-    if local_path.exists() and any(local_path.iterdir()):
-        logger.info(f"Data found locally at '{local_path}'. Skipping download.")
-        return local_path
-    else:
-        logger.info(
-            f"Data not found locally. Downloading from Hugging Face Hub: {repo_id}"
-        )
-        # Ensure the parent directory exists
-        local_path.mkdir(parents=True, exist_ok=True)
+    # Check if the directory already exists and has content
+    if final_data_path.exists() and any(final_data_path.iterdir()):
+        logger.info(f"Data found locally at '{final_data_path}'. Skipping download.")
+        return final_data_path
 
-        # Download the entire repository snapshot from the Hub
+    logger.info(f"Data not found locally. Downloading from Hugging Face Hub: {repo_id}")
+
+    try:
+        # I'm downloading to the project's root directory. The `allow_patterns` will
+        # ensure that huggingface_hub recreates the correct 'data/processed' structure.
         snapshot_download(
             repo_id=repo_id,
             repo_type=repo_type,
-            local_dir=local_path,
-            local_dir_use_symlinks=False,  # Set to False for Windows compatibility
+            local_dir=str(config.PROJECT_ROOT),
+            allow_patterns=[f"data/{local_dir_name}/**"],
+            local_dir_use_symlinks=False,
         )
-        logger.info(f"Successfully downloaded data to '{local_path}'.")
-        return local_path
+        logger.info(f"Successfully downloaded data to '{final_data_path}'.")
+
+    except Exception as e:
+        logger.error(f"Failed to download data from {repo_id}. Error: {e}")
+        raise
+
+    return final_data_path
 
 
 def check_hub_path_exists(
