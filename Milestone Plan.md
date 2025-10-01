@@ -25,7 +25,7 @@ infrastructure, basic data ingestion, and proving the agentic workflow.
 * **3. MVP Component Implementation**
     * `[ ]` **Select Base Models:** Finalise the choice of a pre-trained **base LLM** (e.g., Llama-3-8B-Instruct) and an
       **embedding model** (e.g., `bge-large-en-v1.5`). Note: No fine-tuning at this stage.
-    * `[ ]` **Build RAG Tool:** Implement the core RAG pipeline: load the cleaned 10-K/8-K/news documents, chunk them,
+    * `[X]` **Build RAG Tool:** Implement the core RAG pipeline: load the cleaned 10-K/8-K/news documents, chunk them,
       and create a searchable FAISS vector index.
     * `[X]` **Build Quantitative Tool:** Create a basic `QuantitativeTool` class that wraps the `yfinance` functions to
       get current price, key ratios, etc.

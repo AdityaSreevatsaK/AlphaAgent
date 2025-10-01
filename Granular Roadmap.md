@@ -69,7 +69,7 @@ This phase involves building the individual "tools" that the agent will use in i
       `get_daily_stock_performance(ticker: str)`.
 
 * **RAG Pipeline Development (`src/tools/rag_pipeline.py`):**
-    * `[ ]` Implement an `IngestionPipeline` class that loads documents from `/data/processed`, chunks them using
+    * `[X]` Implement an `IngestionPipeline` class that loads documents from `/data/processed`, chunks them using
       `SentenceSplitter`, generates embeddings, and saves a FAISS vector index to disk.
     * `[ ]` Create a separate `RAGTool` class that loads the pre-built index from disk and exposes a `query(question)`
       method.
