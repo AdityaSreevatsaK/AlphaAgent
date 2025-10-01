@@ -11,5 +11,9 @@ repos:
     rev: v0.12.4
     hooks:
       - id: ruff
+        # Limit to only Python files, excluding notebooks
+        types_or: [python, pyi]
         args: [ --fix ] # Automatically fix what it can
       - id: ruff-format
+        # Limit to only Python files, excluding notebooks
+        types_or: [python, pyi]
