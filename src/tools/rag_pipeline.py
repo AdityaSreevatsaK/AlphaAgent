@@ -1,7 +1,15 @@
 from pathlib import Path
 
 import torch
-from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex
+from llama_index.core import (
+    load_index_from_storage,
+    Settings,
+    SimpleDirectoryReader,
+    StorageContext,
+    VectorStoreIndex,
+)
+from llama_index.core.chat_engine import CondenseQuestionChatEngine
+from llama_index.core.memory import ChatMemoryBuffer
 from llama_index.core.node_parser import SentenceSplitter
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 
@@ -139,3 +147,62 @@ class IngestionPipeline:
         index.storage_context.persist(persist_dir=index_path)
 
         logger.info(f"Successfully created and saved the vector index to: {index_path}")
+
+
+class RAGTool:
+    """
+    RAGTool encapsulates the retrieval and querying logic for the agent.
+
+    This class loads a pre-built vector index from disk and provides a query
+    method to interact with a chat engine, enabling conversational questioning
+    of the indexed documents.
+
+    Attributes:
+        chat_engine (CondenseQuestionChatEngine): The chat engine used for querying.
+    """
+
+    def __init__(self):
+        """
+        Initialises the RAGTool by loading the index and setting up the chat engine.
+        """
+        self._load_index()
+        self._setup_chat_engine()
+
+    def _load_index(self):
+        """
+        Loads the FAISS vector index from the configured storage directory.
+        """
+        logger.info("Loading vector index from storage...")
+        storage_context = StorageContext.from_defaults(
+            persist_dir=str(config.VECTOR_STORE_DIR / "faiss_index")
+        )
+        self.index = load_index_from_storage(storage_context)
+        logger.info("Vector index loaded successfully.")
+
+    def _setup_chat_engine(self):
+        """
+        Sets up the chat engine with memory for conversational context.
+        """
+        logger.info("Setting up chat engine...")
+        # Create a chat memory buffer to retain conversation history
+        memory = ChatMemoryBuffer.from_defaults(token_limit=3900)
+
+        self.chat_engine = CondenseQuestionChatEngine.from_defaults(
+            query_engine=self.index.as_query_engine(),
+            memory=memory,
+        )
+        logger.info("Chat engine setup complete.")
+
+    def query(self, question: str) -> str:
+        """
+        Queries the chat engine with a given question and returns the response.
+
+        Args:
+            question (str): The user's question to be answered by the RAG pipeline.
+
+        Returns:
+            str: The response from the chat engine.
+        """
+        logger.info(f"Querying with question: '{question}'")
+        response = self.chat_engine.chat(question)
+        return str(response)
