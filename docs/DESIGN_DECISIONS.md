@@ -14,5 +14,6 @@ This document records the reasoning behind key architectural and design choices.
     * [Data Sourcing Strategy](./selection_rationale/data_sourcing_strategy_rationale.md)
     * [Tool and Library Selection](./selection_rationale/tool_and_library_selection_rationale.md)
     * [Embedding Model Selection Strategy](./selection_rationale/embedding_model_selection_strategy.md)
+    * [Base LLM Selection Rationale](./selection_rationale/base_llm_selection_rationale.md)
 
 ---
