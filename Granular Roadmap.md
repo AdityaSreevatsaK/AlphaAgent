@@ -88,12 +88,12 @@ This phase brings all the MVP components together into a single, functional appl
       of tools.
 
 * **Web Application (`app.py`):**
-    * `[ ]` Develop a simple Streamlit user interface with an input field and a chat display.
-    * `[ ]` Implement logic to pass the user's query to the agent and display the response. Use `@st.cache_resource` to
+    * `[X]` Develop a simple Streamlit user interface with an input field and a chat display.
+    * `[X]` Implement logic to pass the user's query to the agent and display the response. Use `@st.cache_resource` to
       avoid reloading the agent.
 
 * **End-to-End Testing:**
-    * `[ ]` Perform comprehensive tests of the entire application flow to ensure the MVP is fully operational and ready
+    * `[X]` Perform comprehensive tests of the entire application flow to ensure the MVP is fully operational and ready
       to be demonstrated.
 
 ---

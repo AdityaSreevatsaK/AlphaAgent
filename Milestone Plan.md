@@ -33,9 +33,9 @@ infrastructure, basic data ingestion, and proving the agentic workflow.
 * **4. System Integration & Basic UI**
     * `[X]` **Agent Orchestration:** Use LlamaIndex to create the main agent. Integrate the base LLM and provide it with
       the RAG and Quantitative tools, including clear descriptions of their capabilities.
-    * `[ ]` **Develop UI:** Build a simple Streamlit web application with a text input for user queries and a display
+    * `[X]` **Develop UI:** Build a simple Streamlit web application with a text input for user queries and a display
       area for the agent's response.
-    * `[ ]` **End-to-End Test:** Ensure a user query flows completely through the Streamlit app to the agent, which then
+    * `[X]` **End-to-End Test:** Ensure a user query flows completely through the Streamlit app to the agent, which then
       correctly uses a tool and returns a sensible answer.
 
 ---
