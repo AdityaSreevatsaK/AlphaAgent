@@ -31,7 +31,7 @@ infrastructure, basic data ingestion, and proving the agentic workflow.
       get current price, key ratios, etc.
 
 * **4. System Integration & Basic UI**
-    * `[ ]` **Agent Orchestration:** Use LlamaIndex to create the main agent. Integrate the base LLM and provide it with
+    * `[X]` **Agent Orchestration:** Use LlamaIndex to create the main agent. Integrate the base LLM and provide it with
       the RAG and Quantitative tools, including clear descriptions of their capabilities.
     * `[ ]` **Develop UI:** Build a simple Streamlit web application with a text input for user queries and a display
       area for the agent's response.

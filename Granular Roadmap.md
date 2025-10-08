@@ -81,10 +81,10 @@ This phase involves building the individual "tools" that the agent will use in i
 This phase brings all the MVP components together into a single, functional application.
 
 * **Agent Orchestration (`src/agent/alpha_agent.py`):**
-    * `[ ]` Instantiate the `RAGTool` and `QuantitativeTool`.
-    * `[ ]` Convert the tool methods into LlamaIndex `FunctionTool` objects, ensuring their docstrings are clear and
+    * `[X]` Instantiate the `RAGTool` and `QuantitativeTool`.
+    * `[X]` Convert the tool methods into LlamaIndex `FunctionTool` objects, ensuring their docstrings are clear and
       descriptive for the agent.
-    * `[ ]` Initialise a `ReActAgent` using a powerful **base pre-trained LLM** (e.g., Llama-3-8B-Instruct) and the list
+    * `[X]` Initialise a `ReActAgent` using a powerful **base pre-trained LLM** (e.g., Llama-3-8B-Instruct) and the list
       of tools.
 
 * **Web Application (`app.py`):**
