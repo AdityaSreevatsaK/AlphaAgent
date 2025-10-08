@@ -1,5 +1,4 @@
 import ast
-import asyncio
 import difflib
 import json
 import math
@@ -7,6 +6,7 @@ import os
 import re
 import sys
 from dataclasses import dataclass
+from functools import lru_cache
 from pathlib import Path
 from typing import Dict, List, Optional, Tuple
 
@@ -18,7 +18,8 @@ from llama_index.llms.ollama import Ollama
 
 from src.tools.quantitative_tool import QuantitativeTool
 from src.tools.rag_pipeline import RAGTool
-from src.utils.logger_config import logger, setup_logging
+from src.utils import config
+from src.utils.logger_config import logger
 
 os.environ["LLAMA_INDEX_USE_INSTRUMENTATION"] = (
     "0"  # best-effort; harmless if unsupported
@@ -304,6 +305,27 @@ def _infer_10k_intent(q: str) -> Tuple[str, float]:
     return "default", 0.0
 
 
+@lru_cache(maxsize=1)
+def _get_ticker_name_mapping() -> Dict[str, str]:
+    """
+    Loads the SEC's ticker-to-company-name mapping from the JSON file.
+    The result is cached in memory to avoid re-reading the file.
+    """
+    mapping_file = config.RAW_DATA_DIR / "company_tickers.json"
+    if not mapping_file.exists():
+        logger.warning("company_tickers.json not found. Cannot map tickers to names.")
+        return {}
+
+    with open(mapping_file, "r") as f:
+        all_tickers_data = json.load(f)
+
+    # Create a mapping from ticker to title (company name)
+    ticker_to_name = {
+        value["ticker"]: value["title"] for key, value in all_tickers_data.items()
+    }
+    return ticker_to_name
+
+
 def _build_rag_query(
     user_query: str, ticker: str, intent: str, confidence: float
 ) -> str:
@@ -522,10 +544,25 @@ def _format_metrics_line(r: dict) -> Tuple[str, Optional[float]]:
     return " | ".join(parts), trailing_pe
 
 
-def _is_on_topic(text: str) -> bool:
-    """Simple sanity check to avoid 'patient/surgery' drift etc."""
+def _is_on_topic(text: str, ticker: str) -> bool:
+    """
+    Dynamically checks if the response text is on-topic for the given ticker
+    by looking up the company name from the master ticker list.
+    """
     t = (text or "").lower()
-    need_any = "microsoft" in t or "msft" in t
+    ticker_lower = ticker.lower()
+
+    mapping = _get_ticker_name_mapping()
+    company_name = mapping.get(ticker.upper(), "").lower()
+
+    # Get the primary name, e.g., "Apple Inc." -> "apple"
+    company_name_base = ""
+    if company_name:
+        company_name_base = re.split(r"[,.\s(]", company_name)[0]
+
+    # Check for the ticker OR the primary company name
+    need_any = (ticker_lower in t) or (company_name_base and company_name_base in t)
+
     need_one = any(
         k in t
         for k in ["10-k", "risk", "risk factor", "p/e", "pe ratio", "price/earnings"]
@@ -600,8 +637,27 @@ async def run_manual_react(
         return wants_risks, wants_pe
 
     def _extract_ticker(q: str) -> str:
-        m = re.search(r"\(([A-Z]{1,5})\)", q or "")
-        return m.group(1) if m else "MSFT"
+        """
+        Extracts a stock ticker symbol from a user query string.
+
+        The function searches for ticker symbols in two formats:
+        - Standalone uppercase letters (1-5 characters), e.g., 'TSLA'
+        - Uppercase letters within parentheses, e.g., '(TSLA)'
+
+        If no ticker is found, defaults to 'MSFT'.
+
+        Args:
+            q (str): The input query string.
+
+        Returns:
+            str: The extracted ticker symbol, or 'MSFT' if none found.
+        """
+        # Improved regex to find tickers like (TSLA) or TSLA without parentheses
+        m = re.search(r"\b([A-Z]{1,5})\b", q or "")
+        # Fallback for parenthesized tickers
+        if not m:
+            m = re.search(r"\(([A-Z]{1,5})\)", q or "")
+        return m.group(1) if m else "MSFT"  # Default remains for safety
 
     wants_risks, wants_pe = _infer_intent_flags(user_query)
     item_intent, intent_conf = _infer_10k_intent(user_query)
@@ -872,8 +928,9 @@ Action Input: {json.dumps(action_input, ensure_ascii=False) if isinstance(action
 
     text = m.group(1).strip() if m else _sanitize_final_text(final_out)
 
+    ticker = _extract_ticker(user_query)
     # === On-topic validator + repair pass ===
-    if not _is_on_topic(text):
+    if not _is_on_topic(text, ticker):
         repair = []
         repair.append("You produced an off-topic answer previously.")
         repair.append(
@@ -881,7 +938,7 @@ Action Input: {json.dumps(action_input, ensure_ascii=False) if isinstance(action
         )
         if item_intent == "risks":
             repair.append(
-                "- Summarize Microsoft's (MSFT) key risks from the latest Form 10-K (Item 1A / 1C only)."
+                f"- Summarize {ticker}'s key risks from the latest Form 10-K (Item 1A / 1C only)."
             )
         else:
             repair.append(
@@ -928,37 +985,37 @@ Action Input: {json.dumps(action_input, ensure_ascii=False) if isinstance(action
     return RunResult(text=text, pipeline="react", tools=used_tools or ["(none)"])
 
 
-# ================================= Main =================================
-async def main():
-    """
-    Entry point for AlphaAgent using manual ReAct pipeline.
-
-    - Sets up logging and runtime (LLM, RAG tool, quantitative tool).
-    - Runs a test financial query about Microsoft's latest 10-K risks and P/E ratio.
-    - Logs the query, final response, and provenance (pipeline and tools used).
-    - Handles and logs any exceptions during execution.
-    """
-    try:
-        log = setup_logging()
-        _, rag_tool, qtool = setup_runtime()
-        log.info(
-            "--- AlphaAgent Initialised (MVP manual ReAct). Ask a financial question. ---"
-        )
-
-        test_query = "What are the main risks for Microsoft according to its latest 10-K filing, and what is its current P/E ratio?"
-        log.info(f"Running test query: '{test_query}'")
-
-        result = await run_manual_react(test_query, rag_tool, qtool)
-
-        log.info("\n--- Final Response ---")
-        log.info(result.text)
-        log.info(
-            f"\n[provenance: {result.pipeline}; tools: {', '.join(result.tools) or 'n/a'}]"
-        )
-
-    except Exception as e:
-        logger.error(f"An error occurred during execution: {e}", exc_info=True)
-
-
-if __name__ == "__main__":
-    asyncio.run(main())
+# # ================================= Main =================================
+# async def main():
+#     """
+#     Entry point for AlphaAgent using manual ReAct pipeline.
+#
+#     - Sets up logging and runtime (LLM, RAG tool, quantitative tool).
+#     - Runs a test financial query about Microsoft's latest 10-K risks and P/E ratio.
+#     - Logs the query, final response, and provenance (pipeline and tools used).
+#     - Handles and logs any exceptions during execution.
+#     """
+#     try:
+#         log = setup_logging()
+#         _, rag_tool, qtool = setup_runtime()
+#         log.info(
+#             "--- AlphaAgent Initialised (MVP manual ReAct). Ask a financial question. ---"
+#         )
+#
+#         test_query = "What are the main risks for Microsoft according to its latest 10-K filing, and what is its current P/E ratio?"
+#         log.info(f"Running test query: '{test_query}'")
+#
+#         result = await run_manual_react(test_query, rag_tool, qtool)
+#
+#         log.info("\n--- Final Response ---")
+#         log.info(result.text)
+#         log.info(
+#             f"\n[provenance: {result.pipeline}; tools: {', '.join(result.tools) or 'n/a'}]"
+#         )
+#
+#     except Exception as e:
+#         logger.error(f"An error occurred during execution: {e}", exc_info=True)
+#
+#
+# if __name__ == "__main__":
+#     asyncio.run(main())
