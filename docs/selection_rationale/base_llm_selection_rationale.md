@@ -6,33 +6,43 @@
 
 The selection of a foundational Large Language Model (LLM) is a cornerstone of the AlphaAgent's architecture. This model
 serves as the agent's central reasoning engine, responsible for interpreting user queries, planning tasks, and
-synthesising information from its specialised tools. For the Minimum Viable Product (MVP), the primary constraint is
-ensuring the model can run efficiently on standard, CPU-only hardware with limited memory, making computational
-efficiency and a small resource footprint the most critical selection criteria.
+synthesising information from its specialised tools. For the Minimum Viable Product (MVP), the goal is to balance
+computational efficiency with the need for a sufficiently powerful and reliable reasoning engine to establish a strong
+performance baseline.
 
 ### Decision Rationale
 
-The strategy was to identify a small, powerful, and highly efficient open-source model that could deliver a satisfactory
-baseline performance without requiring GPU acceleration. After evaluating several leading small language models (SLMs),
-the chosen base model for the AlphaAgent MVP is **`Microsoft Phi-3-mini`**.
+The strategy was to identify a powerful, well-supported, and efficient open-source model that could deliver high-quality
+baseline performance. After evaluating several leading language models, the chosen base model for the AlphaAgent MVP is
+**`Mistral-7B`**.
 
-The decision was based on a comparative analysis of the following models, with a focus on their quantised versions which
-are optimised for CPU inference:
+The decision was based on a comparative analysis of the following models, with a focus on their quantised versions:
 
-| Model Name                | Parameters      | Quantized Size (4-bit) | Recommended RAM | Key Characteristics                                                                                                                                                                     |
-|:--------------------------|:----------------|:-----------------------|:----------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| **`Phi-3-mini` (Chosen)** | **3.8 Billion** | **~2.2 GB**            | **8 GB**        | **State-of-the-art performance for its size, offering strong reasoning and language understanding capabilities with a very low memory footprint.**                                      |
-| `Mistral-7B`              | 7 Billion       | ~4.1 GB                | 16 GB           | A highly capable model known for its strong performance, but it requires significantly more RAM, making it less suitable for resource-constrained MVP development.                      |
-| `Gemma 2B`                | 2 Billion       | ~1.4 GB                | 8 GB            | An extremely lightweight model from Google, excellent for memory-limited environments, but `Phi-3-mini` generally offers superior reasoning capabilities for a slight increase in size. |
+| Model Name                | Parameters    | Quantized Size (4-bit) | Recommended RAM | Key Characteristics                                                                                                                                                                   |
+|:--------------------------|:--------------|:-----------------------|:----------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **`Mistral-7B` (Chosen)** | **7 Billion** | **~4.1 GB**            | **16 GB**       | **A highly capable model known for its strong performance and reasoning capabilities. It represents an excellent balance of power and efficiency, making it ideal for a robust MVP.** |
+| `Microsoft Phi-3-mini`    | 3.8 Billion   | ~2.2 GB                | 8 GB            | A state-of-the-art small language model with a very low memory footprint, offering strong performance for its size but with less overall reasoning capacity compared to `Mistral-7B`. |
+| `Gemma 2B`                | 2 Billion     | ~1.4 GB                | 8 GB            | An extremely lightweight model from Google, excellent for memory-limited environments, but `Mistral-7B` offers significantly superior reasoning capabilities.                         |
 
-The selection of **`Phi-3-mini`** is a pragmatic choice that directly addresses the MVP's primary constraints. Its
-ability to run effectively on systems with as little as 8 GB of RAM makes it highly accessible and ensures a smooth
-development and demonstration experience on standard hardware. It represents the optimal balance between computational
-efficiency and the advanced reasoning capabilities required for a financial analysis agent.
+The selection of **`Mistral-7B`** is a strategic choice that prioritises a high-quality, reliable baseline for the
+agent's analytical capabilities. While it requires more RAM than smaller alternatives, its superior performance in
+reasoning and instruction-following justifies the higher resource requirement, ensuring the MVP is built on a powerful
+and scalable foundation.
 
 ### Future Considerations
 
-While `Phi-3-mini` is the ideal starting point, the roadmap for AlphaAgent includes a fine-tuning phase where a more
-powerful model will be specialised on financial data. Post-MVP, and with access to GPU resources, an upgrade to a larger
-and more capable model, such as a fine-tuned version of `Mistral-7B` or a future, more advanced SLM, will be explored to
-enhance the depth and accuracy of the agent's analytical capabilities.
+While `Mistral-7B` provides a strong starting point, the roadmap for AlphaAgent includes a fine-tuning phase to
+specialise the model on financial data. Post-MVP, and with dedicated GPU resources, a fine-tuned version of `Mistral-7B`
+will be evaluated against larger, more advanced models to further enhance the depth and accuracy of the agent's
+analytical capabilities.
+
+---
+
+### Revision Note (8th October 2025)
+
+The project initially selected `Microsoft Phi-3-mini` as the base LLM, prioritising computational efficiency and a
+minimal resource footprint for the MVP. While the model performed adequately on basic tasks, empirical testing revealed
+limitations in its ability to handle the multi-step reasoning and complex financial synthesis required by AlphaAgent's
+core objectives. To establish a more powerful and reliable analytical baseline, the decision was made to upgrade to
+`Mistral-7B`. This change represents a strategic pivot to prioritise superior reasoning and instruction-following
+capabilities from the start, thereby ensuring the MVP is built on a more robust and scalable foundation.
