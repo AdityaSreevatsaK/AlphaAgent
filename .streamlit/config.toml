@@ -1,0 +1,12 @@
+[theme]
+# A vibrant and energetic orange for buttons and interactive elements.
+primaryColor="#FF4B4B"
+
+# An off-white background to be bright but not glaring.
+backgroundColor="#F0F2F6"
+
+# A clean white for the background of containers and text boxes.
+secondaryBackgroundColor="#FFFFFF"
+
+# Dark, highly readable text for excellent contrast.
+textColor="#31333F"
