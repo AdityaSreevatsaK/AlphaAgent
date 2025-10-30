@@ -84,3 +84,36 @@ if st.button("Analyse", key="analyse_button"):
                 st.error(f"An error occurred: {e}")
     else:
         st.warning("Please enter a query to analyse.")
+
+# --- Footer ---
+footer_style = """
+<style>
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #FFFFFF; /* Matches the new secondaryBackgroundColor */
+    color: #31333F; /* Matches the new textColor */
+    text-align: center;
+    padding: 10px;
+    border-top: 1px solid #E0E2E6; /* A light border for separation */
+    z-index: 9999; /* Ensures the footer stays on top of other elements */
+}
+.footer a {
+    color: #FF4B4B; /* Matches the new primaryColor */
+    text-decoration: none;
+}
+.footer a:hover {
+    text-decoration: underline;
+}
+</style>
+"""
+st.markdown(footer_style, unsafe_allow_html=True)
+
+footer_html = """
+<div class="footer">
+    <p>Made with ❤️ for AI by <a href="https://www.linkedin.com/in/adityasreevatsak/" target="_blank">Aditya Sreevatsa K</a></p>
+</div>
+"""
+st.markdown(footer_html, unsafe_allow_html=True)
