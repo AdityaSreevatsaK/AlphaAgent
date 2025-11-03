@@ -6,7 +6,6 @@ from datetime import datetime, timedelta
 import finnhub
 
 from src.utils import config
-from src.utils.config import NEWS_LOOKBACK_DAYS
 
 # Get the logger
 logger = logging.getLogger(__name__)
@@ -31,9 +30,13 @@ def fetch_company_news(target_tickers: list):
     finnhub_client = finnhub.Client(api_key=api_key)
     logger.info("Finnhub client initialized.")
 
+    # Get news lookback days from config.yml
+    news_api_config = config.get_config("news_api")
+    news_lookback_days = news_api_config.get("lookback_days", 90)
+
     # Define the date range for the news (e.g., the last 90 days)
     end_date = datetime.now()
-    start_date = end_date - timedelta(days=NEWS_LOOKBACK_DAYS)
+    start_date = end_date - timedelta(days=news_lookback_days)
     date_format = "%Y-%m-%d"
 
     # Create a directory to save the news data
