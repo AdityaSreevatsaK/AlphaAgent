@@ -76,7 +76,7 @@ class IngestionPipeline:
         logger.info(f"Set embedding batch size to: {batch_size}")
 
         # --- Configure Node Parser (SentenceSplitter) ---
-        node_parser = SentenceSplitter(chunk_size=200, chunk_overlap=50)
+        node_parser = SentenceSplitter(chunk_size=256, chunk_overlap=50)
 
         # --- Set Global Settings ---
         Settings.embed_model = embed_model
