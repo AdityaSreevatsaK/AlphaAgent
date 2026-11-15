@@ -3,13 +3,14 @@ import logging
 import sys
 from pathlib import Path
 
+# Make direct script invocation work outside the repository root.
+project_root = Path(__file__).resolve().parents[1]
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
 from src.tools.rag_pipeline import IngestionPipeline
 from src.utils import config
 from src.utils.logger_config import logger
-
-# Add the project root to the Python path for module resolution
-project_root = Path(__file__).resolve().parents[1]
-sys.path.append(str(project_root))
 
 
 def main():
@@ -49,12 +50,14 @@ def main():
         pipeline.run_pipeline(input_dir_path=data_path)
 
         logger.info("RAG data ingestion process completed successfully.")
+        return 0
 
     except Exception as e:
         logger.error(
             f"An error occurred during the ingestion process: {e}", exc_info=True
         )
+        return 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
