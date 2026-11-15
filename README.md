@@ -1,55 +1,38 @@
-# <u><p align="center">Alpha Agent</p></u>
-## <p align="center"><i>Financial Clarity, Powered by AI</i></p>
-An AI financial analyst that combines qualitative news analysis (RAG) with quantitative market data to deliver
-comprehensive, data-grounded insights.
+# AlphaAgent
 
----
+A **local financial-research prototype** combining document retrieval and market-data tools behind a Streamlit interface.
 
-### Project Vision & Goal
-AlphaAgent is an autonomous AI framework designed to emulate the comprehensive workflow of a human financial analyst.
-The project's core objective is to overcome the limitations of standard Large Language Models (LLMs), such as factual
-hallucination and a lack of access to real-time, domain-specific data. By creating an agent that can intelligently use
-multiple specialised tools, AlphaAgent aims to produce financial analysis that is accurate, transparent, auditable, and
-actionable, providing a reliable foundation for investment decisions.
+The current implementation uses **Ollama with a Mistral model**, **LlamaIndex/Hugging Face embeddings** for local news and filing retrieval, and **yfinance** for market information. A manually orchestrated ReAct-style loop selects tools and produces a response.
 
----
+## Implemented components
 
-### Core Architecture
-The framework is built on a modular, multi-component architecture, separating reasoning from execution.
-#### The Orchestrator (The Brain):
-This is the central reasoning engine of the agent, powered by a domain-specifically fine-tuned LLM (e.g., Llama-3-8B or
-Mistral-7B). It interprets complex user prompts, formulates a multi-step plan, and intelligently dispatches tasks to
-the appropriate tool. Its primary role is planning and synthesis.
-#### Tool 1: The News & Filings Analyst (RAG System):
-This is your core Retrieval-Augmented Generation (RAG) system. It functions as a specialised tool that allows the agent
-to query and understand unstructured, qualitative data. Its knowledge base includes:
-- SEC filings (10-K, 8-K)
-- Earnings call transcripts
-- Real-time market news
-#### Tool 2: The Quantitative Data Analyst:
-This is a new, dedicated tool for handling structured, numerical data. Implemented in Python (likely with Pandas and
-yfinance), it gives the agent the ability to perform precise calculations and fetch verifiable metrics. Its
-capabilities include:
-- Fetching current and historical stock prices.
-- Calculating technical indicators (e.g., moving averages).
-- Retrieving fundamental financial ratios (P/E, EPS, etc.).
+| Component | Location |
+| --- | --- |
+| Streamlit user interface | [`app.py`](app.py) |
+| Tool-routing and response logic | [`src/agent/alpha_agent.py`](src/agent/alpha_agent.py) |
+| Local news/filings retrieval | [`src/tools/rag_pipeline.py`](src/tools/rag_pipeline.py) |
+| Market data and financial ratios | [`src/tools/quantitative_tool.py`](src/tools/quantitative_tool.py) |
+| Data ingestion | [`scripts/run_rag_ingestion.py`](scripts/run_rag_ingestion.py) |
 
----
+## Running locally
 
-### Operational Workflow
-AlphaAgent's innovation lies in its autonomous, multi-step execution process. Consider the user prompt:
-"Analyse the market reaction to NVIDIA's latest earnings report and compare its current P/E ratio to that of AMD."
-- Deconstruction & Planning: The Orchestrator receives the prompt and breaks it down into a logical plan:
-  - Step 1: Find qualitative information on market sentiment regarding NVIDIA's earnings.
-  - Step 2: Fetch the quantitative P/E ratio for NVIDIA.
-  - Step 3: Fetch the quantitative P/E ratio for AMD.
-  - Step 4: Synthesise all findings into a final answer.
-- Intelligent Tool Execution: The Orchestrator calls the correct tool for each step:
-  - Call Tool 1 (RAG): "Summarise news and analyst sentiment following NVIDIA's recent earnings release."
-  - Call Tool 2 (Quantitative): "Fetch the current P/E ratio for ticker NVDA."
-  - Call Tool 2 (Quantitative): "Fetch the current P/E ratio for ticker AMD."
-- Synthesis: After receiving the outputs from all tool calls, the Orchestrator combines the qualitative sentiment
-analysis with the direct P/E ratio comparison to generate a single, comprehensive, and evidence-backed response for
-the user.
+**Prerequisites:** Windows with Conda, Ollama, adequate memory and a local corpus of permitted financial documents. The checked-in `environment.yml` contains Windows-specific dependency builds and has not been validated on other systems.
 
-----
+```powershell
+conda env create -f environment.yml
+conda activate AlphaAgentEnv
+ollama pull mistral:7b-instruct-q4_0
+streamlit run app.py
+```
+
+The Streamlit application expects Ollama to be running and a compatible retrieval index to have been populated. Place authorised source documents in the project's processed-data location and review the [ingestion script](scripts/run_rag_ingestion.py) before running it. The repository does **not** include a ready-to-use financial-document index.
+
+## Limitations
+
+- **Research prototype, not an investment-advice service or production platform.** Generated answers and market figures can be incomplete, stale or incorrect. Verify against primary financial disclosures before relying on them.
+- No automated CI test suite is currently configured; the `tests/` directory contains no executable tests.
+- Live news availability, data completeness, factual accuracy and financial outcomes have **not** been independently evaluated.
+- The runtime uses a local Ollama Mistral model; fine-tuning, guaranteed real-time data and independent security approval should **not** be inferred.
+- The provided environment is sizeable and OS-specific. First-time model and embedding downloads require internet access.
+
+This source is made available as an engineering experiment under the [MIT License](LICENSE).
