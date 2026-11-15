@@ -30,7 +30,7 @@ The Streamlit application expects Ollama to be running and a compatible retrieva
 ## Limitations
 
 - **Research prototype, not an investment-advice service or production platform.** Generated answers and market figures can be incomplete, stale or incorrect. Verify against primary financial disclosures before relying on them.
-- No automated CI test suite is currently configured; the `tests/` directory contains no executable tests.
+- [Offline CI](.github/workflows/ci.yml) covers 10 mocked unit scenarios for market-data formatting, API failures, caching and ingestion exit codes on Windows/Linux with Python 3.11/3.12. These checks do **not** exercise Ollama, external market APIs or full financial-research accuracy.
 - Live news availability, data completeness, factual accuracy and financial outcomes have **not** been independently evaluated.
 - The runtime uses a local Ollama Mistral model; fine-tuning, guaranteed real-time data and independent security approval should **not** be inferred.
 - The provided environment is sizeable and OS-specific. First-time model and embedding downloads require internet access.
