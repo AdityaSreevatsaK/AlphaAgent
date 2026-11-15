@@ -32,6 +32,8 @@ class QuantitativeToolTests(unittest.TestCase):
     def setUp(self):
         self.module.QuantitativeTool._get_ticker_info.cache_clear()
         self.module.yf.Ticker.reset_mock()
+        self.module.yf.Ticker.side_effect = None
+        self.module.yf.Ticker.return_value = Mock()
 
     def test_financial_ratios_format_with_live_fields(self):
         self.module.yf.Ticker.return_value.info = {
